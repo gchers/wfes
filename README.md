@@ -1,3 +1,7 @@
+
+NOTE: this repo is still under construction
+-------------------------------------------
+
 This is a suite for evaluating Website Fingerprinting (WF)
 attacks and defenses.
 
@@ -10,14 +14,20 @@ original ones; the changes I made are documented by diff files.
 
 ## Installation
 
+```
 mkvirtualenv bayes
 pip install -r requirements.txt
+```
 
 Install weka >=3.8 in ~/$WEKA_VERSION/
 Then:
+```
 java -classpath ~/$WEKA_VERSION/weka.jar weka.core.WekaPackageManager -install-package LibSVM
-
+```
+Build attack code by Wang et al.
+```
 cd code/attacks/wang && make && cd -
+```
 
 ## Reproducing Experiments
 
