@@ -1,16 +1,14 @@
-
-NOTE: this repo is still under construction
--------------------------------------------
-
 This is a suite for evaluating Website Fingerprinting (WF)
 attacks and defenses.
 
-Particularly, it provides a standard interface to use the code from
+It provides a standard interface to use the code from
 other WF researchers, who are acknowledged below, and to evaluate the
 security of a WF defence independently of a classifier.
 Regarding the code I collected from other researchers, my intent was to
 make the fewest changes possible so to keep the results close to the
 original ones; the changes I made are documented by diff files.
+
+An introduction for computing security bounds is at [https://giocher.com/pages/bayes.html](https://giocher.com/pages/bayes.html).
 
 ## Installation
 
