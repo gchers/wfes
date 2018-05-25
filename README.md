@@ -38,7 +38,7 @@ Download the WCN+ dataset:
 ```bash
 mkdir -p data/WCN+
 cd data/WCN+
-wget https://cs.uwaterloo.ca/~t55wang/knndata.zip
+wget https://www.cse.ust.hk/~taow/wf/data/knndata.zip
 unzip data/knndata.zip
 mv batch original
 ```
