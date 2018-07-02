@@ -1,0 +1,10 @@
+*batch*
+*.arff
+*cache*
+*.swp
+*.o
+*.so
+*.pyc
+*.swp
+*.RData
+*.Rhistory
