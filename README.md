@@ -1,14 +1,20 @@
+# Website Fingerprinting Evaluation Suite.
+
 This is a suite for evaluating Website Fingerprinting (WF)
 attacks and defenses.
 
-It provides a standard interface to use the code from
-other WF researchers, who are acknowledged below, and to evaluate the
-security of a WF defence independently of a classifier.
-Regarding the code I collected from other researchers, my intent was to
-make the fewest changes possible so to keep the results close to the
-original ones; the changes I made are documented by diff files.
+It provides:
+- a standard interface to use the code from previous attacks/defences,
+- a method to estimate security bounds and $(\varepsilon, \Phi)$-privacy of
+  a WF defense.
 
-An introduction for computing security bounds is at [https://giocher.com/pages/bayes.html](https://giocher.com/pages/bayes.html).
+Code from other researchers (acknowledged below) was adapted to fit the API.
+With this regard, I tried making as few changes as possible, so as to keep the
+results close to the original ones; the changes I made are documented by diff
+files.
+
+An introduction for computing security bounds is at
+[https://giocher.com/pages/bayes.html](https://giocher.com/pages/bayes.html).
 
 ## Installation
 
