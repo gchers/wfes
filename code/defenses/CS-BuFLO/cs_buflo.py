@@ -8,12 +8,12 @@ import random
 from numpy import median
 from collections import deque
 
-INF = float('inf')
 
 # Direction
 IN = -1
 OUT = 1
 MTU = 1
+INF = float('inf')
 
 # Upstream: from the current endpoint to the defence
 # Downstream: from the other endpoint to the defence
@@ -38,6 +38,8 @@ MAX_RHO = 2**3 * 1000
 
 
 class TimeTravel(Exception):
+    """This exception is raised when there are time inconsistencies.
+    """
     pass
 
 
@@ -443,24 +445,24 @@ def normalise_timings(packets):
 
 if __name__ == '__main__':
 
-    if len(sys.argv) < 2:
-        print 'Usage: %s <input folder>'
+    if len(sys.argv) < 3:
+        print 'Usage: {} <input folder> <output folder>'.format(sys.argv[1])
         sys.exit(1)
     
-    DATASET = sys.argv[1]
-    DEFENDED = 'defended/'
+    dataset = sys.argv[1]
+    outdirectory = sys.argv[2]
     
-    if not os.path.exists(DEFENDED):
-        os.makedirs(DEFENDED)
+    if not os.path.exists(outdirectory):
+        os.makedirs(outdirectory)
 
     # Defend
-    for fname in os.listdir(DATASET):
+    for fname in os.listdir(dataset):
         # Skip open world traces
         if '-' not in fname:
             continue
-        print(fname)
-        infname = os.path.join(DATASET, fname)
-        outfname = os.path.join(DEFENDED, fname)
+        print fname,
+        infname = os.path.join(dataset, fname)
+        outfname = os.path.join(outdirectory, fname)
 
         packets = []
         with open(infname, 'r') as f:
