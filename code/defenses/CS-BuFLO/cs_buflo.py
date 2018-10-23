@@ -9,6 +9,9 @@ from numpy import median
 from collections import deque
 
 
+# Where defended data is put.
+DEFENDED = './defended'
+
 # Direction
 IN = -1
 OUT = 1
@@ -445,12 +448,12 @@ def normalise_timings(packets):
 
 if __name__ == '__main__':
 
-    if len(sys.argv) < 3:
-        print 'Usage: {} <input folder> <output folder>'.format(sys.argv[1])
+    if len(sys.argv) < 2:
+        print 'Usage: {} <input folder>'.format(sys.argv[1])
         sys.exit(1)
     
     dataset = sys.argv[1]
-    outdirectory = sys.argv[2]
+    outdirectory = DEFENDED
     
     if not os.path.exists(outdirectory):
         os.makedirs(outdirectory)
