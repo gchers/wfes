@@ -1,0 +1,167 @@
+Only in dyer/: __init__.py
+--- website-fingerprinting/classifiers/BandwidthClassifier.py
++++ dyer/classifiers/BandwidthClassifier.py
+@@ -4,7 +4,7 @@
+ 
+ import wekaAPI
+ from Packet import Packet
+-import arffWriter
++from .. import arffWriter
+ 
+ class BandwidthClassifier:
+     @staticmethod
+--- website-fingerprinting/classifiers/ESORICSClassifier.py
++++ dyer/classifiers/ESORICSClassifier.py
+@@ -2,7 +2,7 @@
+ # Copyright (C) 2012  Kevin P. Dyer (kpdyer.com)
+ # See LICENSE for more details.
+ 
+-import config
++from .. import config
+ from Packet import Packet
+ import Levenshtein
+ 
+--- website-fingerprinting/classifiers/HerrmannClassifier.py
++++ dyer/classifiers/HerrmannClassifier.py
+@@ -4,7 +4,7 @@
+ 
+ import wekaAPI
+ import math
+-import arffWriter
++from .. import arffWriter
+ 
+ # TF-N implementation of Multinomial Naive Bayes Classifier
+ class HerrmannClassifier:
+--- website-fingerprinting/classifiers/JaccardClassifier.py
++++ dyer/classifiers/JaccardClassifier.py
+@@ -2,7 +2,7 @@
+ # Copyright (C) 2012  Kevin P. Dyer (kpdyer.com)
+ # See LICENSE for more details.
+ 
+-import config
++from .. import config
+ 
+ class JaccardClassifier:
+     @staticmethod
+--- website-fingerprinting/classifiers/LiberatoreClassifier.py
++++ dyer/classifiers/LiberatoreClassifier.py
+@@ -2,7 +2,7 @@
+ # Copyright (C) 2012  Kevin P. Dyer (kpdyer.com)
+ # See LICENSE for more details.
+ 
+-import arffWriter
++from .. import arffWriter
+ import wekaAPI
+ 
+ class LiberatoreClassifier:
+--- website-fingerprinting/classifiers/PanchenkoClassifier.py
++++ dyer/classifiers/PanchenkoClassifier.py
+@@ -3,12 +3,12 @@
+ # See LICENSE for more details.
+ 
+ import wekaAPI
+-import arffWriter
++from .. import arffWriter
+ 
+-from statlib import stats
++#from statlib import stats
+ 
+-from Trace import Trace
+-from Packet import Packet
++from ..Trace import Trace
++from ..Packet import Packet
+ import math
+ 
+ class PanchenkoClassifier:
+--- website-fingerprinting/classifiers/TimeClassifier.py
++++ dyer/classifiers/TimeClassifier.py
+@@ -4,7 +4,7 @@
+ 
+ import wekaAPI
+ from Packet import Packet
+-import arffWriter
++from .. import arffWriter
+ 
+ class TimeClassifier:
+     @staticmethod
+--- website-fingerprinting/classifiers/VNGClassifier.py
++++ dyer/classifiers/VNGClassifier.py
+@@ -2,7 +2,7 @@
+ # Copyright (C) 2012  Kevin P. Dyer (kpdyer.com)
+ # See LICENSE for more details.
+ 
+-import arffWriter
++from .. import arffWriter
+ import wekaAPI
+ 
+ from statlib import stats
+--- website-fingerprinting/classifiers/VNGPlusPlusClassifier.py
++++ dyer/classifiers/VNGPlusPlusClassifier.py
+@@ -3,12 +3,12 @@
+ # See LICENSE for more details.
+ 
+ import wekaAPI
+-import arffWriter
++from .. import arffWriter
+ 
+-from statlib import stats
++#from statlib import stats
+ 
+-from Trace import Trace
+-from Packet import Packet
++from ..Trace import Trace
++from ..Packet import Packet
+ import math
+ 
+ class VNGPlusPlusClassifier:
+--- website-fingerprinting/classifiers/WrightClassifier.py
++++ dyer/classifiers/WrightClassifier.py
+@@ -3,7 +3,7 @@
+ # See LICENSE for more details.
+ 
+ import wekaAPI
+-import arffWriter
++from .. import arffWriter
+ 
+ class WrightClassifier:
+     @staticmethod
+Only in dyer/: classifiers/__init__.py
+--- website-fingerprinting/classifiers/wekaAPI.py
++++ dyer/classifiers/wekaAPI.py
+@@ -4,8 +4,8 @@
+ 
+ import re
+ import subprocess
+-import config
+ import os
++from .. import config
+ 
+ def execute( trainingFile, testingFile, classifier, args ):
+     myArgs = ["java",
+--- website-fingerprinting/config.py
++++ dyer/config.py
+@@ -10,17 +10,21 @@
+ # * weka-X-Y-Z (see WEKA_ROOT to change the weka version)
+ # * pcap-logs (a diretory that contains all of the LL pcap files)
+ # * [optional] (a directory that contains custom/local python modules)
+-BASE_DIR        = ''
++BASE_DIR        = os.path.expanduser('~')
+ 
+ # Enviromental settings
+ JVM_MEMORY_SIZE = '4192m'
+ 
+-WEKA_ROOT          = os.path.join(BASE_DIR   ,'weka-3-7-5')
++#WEKA_ROOT          = os.path.join(BASE_DIR   ,'weka-3-7-5')
++WEKA_ROOT          = os.path.join(BASE_DIR   ,'weka-3-6-14/')
+ WEKA_JAR           = os.path.join(WEKA_ROOT  ,'weka.jar')
+ PCAP_ROOT          = os.path.join(BASE_DIR   ,'pcap-logs')
+ PYTHON_ROOT        = os.path.join(BASE_DIR   ,'python2.4')
+ PYTHONPATH         = os.path.join(PYTHON_ROOT,'lib/python')
+-CACHE_DIR          = './cache'
++CACHE_DIR          = 'attacks/dyer/cache'
++if not os.path.isdir(CACHE_DIR):
++    print '[*] Creating CACHE_DIR in {}'.format(CACHE_DIR)
++    os.makedirs(CACHE_DIR)
+ COUNTERMEASURE_DIR = './countermeasures'
+ CLASSIFIERS_DIR    = './classifiers'
+ OUTPUT_DIR         = './output'

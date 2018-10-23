@@ -1,0 +1,202 @@
+Only in hayes/: README.md
+--- hayes/RF_fextract.py
++++ hayesnew/RF_fextract.py
+@@ -93,8 +93,8 @@
+         interstats.extend(([0]*15))
+     return interstats
+ 
+-def time_percentile_stats(trace_data):
+-    Total = get_pkt_list(trace_data)
++def time_percentile_stats(list_data):
++    Total = list_data
+     In, Out = In_Out(Total)
+     In1 = [x[0] for x in In]
+     Out1 = [x[0] for x in Out]
+@@ -123,13 +123,13 @@
+         STATS.extend(([0]*4))
+     return STATS
+ 
+-def number_pkt_stats(trace_data):
+-    Total = get_pkt_list(trace_data)
++def number_pkt_stats(list_data):
++    Total = list_data
+     In, Out = In_Out(Total)
+     return len(In), len(Out), len(Total)
+ 
+-def first_and_last_30_pkts_stats(trace_data):
+-    Total = get_pkt_list(trace_data)
++def first_and_last_30_pkts_stats(list_data):
++    Total = list_data
+     first30 = Total[:30]
+     last30 = Total[-30:]
+     first30in = []
+@@ -154,8 +154,8 @@
+     return stats
+ 
+ #concentration of outgoing packets in chunks of 20 packets
+-def pkt_concentration_stats(trace_data):
+-    Total = get_pkt_list(trace_data)
++def pkt_concentration_stats(list_data):
++    Total = list_data
+     chunks= [Total[x:x+20] for x in xrange(0, len(Total), 20)]
+     concentrations = []
+     for item in chunks:
+@@ -167,8 +167,8 @@
+     return np.std(concentrations), sum(concentrations)/float(len(concentrations)), np.percentile(concentrations, 50), min(concentrations), max(concentrations), concentrations
+ 
+ #Average number packets sent and received per second
+-def number_per_sec(trace_data):
+-    Total = get_pkt_list(trace_data)
++def number_per_sec(list_data):
++    Total = list_data
+     last_time = Total[-1][0]
+     last_second = math.ceil(last_time)
+     temp = []
+@@ -186,8 +186,8 @@
+     return avg_number_per_sec, np.std(l), np.percentile(l, 50), min(l), max(l), l
+ 
+ #Variant of packet ordering features from http://cacr.uwaterloo.ca/techreports/2014/cacr2014-05.pdf
+-def avg_pkt_ordering_stats(trace_data):
+-    Total = get_pkt_list(trace_data)
++def avg_pkt_ordering_stats(list_data):
++    Total = list_data
+     c1 = 0
+     c2 = 0
+     temp1 = []
+@@ -204,8 +204,8 @@
+ 
+     return avg_in, avg_out, np.std(temp1), np.std(temp2)
+ 
+-def perc_inc_out(trace_data):
+-    Total = get_pkt_list(trace_data)
++def perc_inc_out(list_data):
++    Total = list_data
+     In, Out = In_Out(Total)
+     percentage_in = len(In)/float(len(Total))
+     percentage_out = len(Out)/float(len(Total))
+@@ -262,19 +262,18 @@
+ 
+ 
+ #If size information available add them in to function below
+-def TOTAL_FEATURES(trace_data, max_size=175):
+-    list_data = get_pkt_list(trace_data)
++def TOTAL_FEATURES(list_data, max_size=175):
+     ALL_FEATURES = []
+ 
+     # ------TIME--------
+     intertimestats = [x for x in interarrival_maxminmeansd_stats(list_data)[0]]
+-    timestats = time_percentile_stats(trace_data)
+-    number_pkts = list(number_pkt_stats(trace_data))
+-    thirtypkts = first_and_last_30_pkts_stats(trace_data)
+-    stdconc, avgconc, medconc, minconc, maxconc, conc = pkt_concentration_stats(trace_data)
+-    avg_per_sec, std_per_sec, med_per_sec, min_per_sec, max_per_sec, per_sec = number_per_sec(trace_data)
+-    avg_order_in, avg_order_out, std_order_in, std_order_out = avg_pkt_ordering_stats(trace_data)
+-    perc_in, perc_out = perc_inc_out(trace_data)
++    timestats = time_percentile_stats(list_data)
++    number_pkts = list(number_pkt_stats(list_data))
++    thirtypkts = first_and_last_30_pkts_stats(list_data)
++    stdconc, avgconc, medconc, minconc, maxconc, conc = pkt_concentration_stats(list_data)
++    avg_per_sec, std_per_sec, med_per_sec, min_per_sec, max_per_sec, per_sec = number_per_sec(list_data)
++    avg_order_in, avg_order_out, std_order_in, std_order_out = avg_pkt_ordering_stats(list_data)
++    perc_in, perc_out = perc_inc_out(list_data)
+ 
+     altconc = []
+     alt_per_sec = []
+Only in hayesnew/: __init__.py
+--- hayes/kFP.py
++++ hayesnew/kFP.py
+@@ -17,6 +17,7 @@
+ from collections import defaultdict
+ import argparse
+ from itertools import chain
++from sklearn.metrics.pairwise import pairwise_distances
+ #from tqdm import *
+ 
+ # re-seed the generator
+@@ -198,22 +199,18 @@
+     return training_features, test_features
+ 
+ 
+-def RF_closedworld(mon_type, path_to_dict = dic_of_feature_data):
++def RF_closedworld(tr_data, tr_label, te_data, te_label):
+     '''Closed world RF classification of data -- only uses sk.learn classification - does not do additional k-nn.'''
+ 
+-    training, test = mon_train_test_references(mon_type, path_to_dict)
+-    tr_data, tr_label1 = zip(*training)
+-    tr_label = zip(*tr_label1)[0]
+-    te_data, te_label1 = zip(*test)
+-    te_label = zip(*te_label1)[0]
++    #print "Monitored type: ", mon_type
++    #print
+ 
+-    print "Monitored type: ", mon_type
+-    print
+-
+     print "Training ..."
+     model = RandomForestClassifier(n_jobs=2, n_estimators=num_Trees, oob_score = True)
+     model.fit(tr_data, tr_label)
+-    print "RF accuracy = ", model.score(te_data, te_label)
++    predictions = model.predict(te_data)
++    accuracy = sum(predictions == te_label) / len(te_label)
++    print "RF accuracy = ", accuracy
+ 
+     #print "Feature importance scores:"
+     #print model.feature_importances_
+@@ -222,6 +219,56 @@
+     print "cross_val_score = ", scores.mean()
+     #print "OOB score = ", model.oob_score_(tr_data, tr_label)
+ 
++    return accuracy, predictions
++
++def RF_openworld_features(tr_data, tr_label, te_data):
++    """Uses RF to extract new features (leaves) from the original
++    features.
++    """
++    model = RandomForestClassifier(n_jobs=-1, n_estimators=num_Trees,
++                                   oob_score=True)
++    model.fit(tr_data, tr_label)
++
++    train_leaf = model.apply(tr_data)
++    test_leaf = model.apply(te_data)
++
++    return train_leaf, test_leaf
++
++
++def RF_openworld_adapted(tr_data, tr_label, te_data, te_label, k=3):
++    """Open world k-RF classification of data.
++
++    This is an adapted version of the original code, which includes
++    RF_openworld(), distances() and distance_stats() to train on training
++    data, get the leaves using RF, and then use k-NN to make a
++    prediction.
++    Predicts the label when the k nearest neighbours agree on a label,
++    otherwise outputs "-1" (i.e., unmonitored page).
++    """
++    print "Using RF to extract features ..."
++    train_leaf, test_leaf = RF_openworld_features(tr_data, tr_label, te_data)
++    print "Computing distances ..."
++    dist = pairwise_distances(test_leaf, train_leaf, metric='hamming')
++
++    print "Making predictions ..."
++    predictions = []
++    accuracy = 0.0
++    for i in range(len(test_leaf)):
++        # Sort training labels with respect to the
++        # pairwise distances to the i-th test object
++        sorted_idx = np.argsort(dist[i])
++        sorted_labels = tr_label[sorted_idx]
++        # If no consensus for the label, output -1
++        y = sorted_labels[0]
++        if not np.all(sorted_labels[:k] == y):
++            y = -1
++        predictions.append(y)
++        if y == te_label[i]:
++            accuracy += 1
++
++    accuracy /= len(test_leaf)
++    
++    return accuracy, predictions
+ 
+ def RF_openworld(mon_type, path_to_dict = dic_of_feature_data):
+     '''Produces leaf vectors used for classification.'''
+Only in hayes/: requirements.txt
