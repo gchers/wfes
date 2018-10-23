@@ -1,3 +1,6 @@
+# Implementation of the CS-BuFLO defense (Cai et al., 14).
+#
+# Author: Giovanni Cherubin (@gchers)
 import os
 import sys
 import math
