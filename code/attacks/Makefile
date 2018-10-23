@@ -11,3 +11,4 @@ clean:
 	cd dyer && $(MAKE) clean
 	cd hayes && $(MAKE) clean
 	cd wang && $(MAKE) clean
+	rm *.pyc

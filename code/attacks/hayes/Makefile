@@ -1,11 +1,13 @@
 REPO=https://github.com/jhayes14/k-FP
-COMMIT=ca5ad5cc2d042bea47b99fa81062f0a99e3151f7 # Repo's commit.
+COMMIT=ca5ad5cc2d042bea47b99fa81062f0a99e3151f7
 
 all:
 	@echo Cloning report into current directory.
-	git init
-	git remote add origin $(REPO)
-	git pull origin $(COMMIT)
+	wget $(REPO)/archive/$(COMMIT).zip
+	unzip $(COMMIT).zip
+	mv k-FP-$(COMMIT)/* .
+	rmdir k-FP-$(COMMIT)
+	rm $(COMMIT).zip
 	@echo Patching code.
 	mv k-FP.py kFP.py
 	patch -p1 -s < hayes.patch
@@ -14,4 +16,4 @@ all:
 	@#pip install -r hayes/requirements.txt
 
 clean:
-	rm -rf .git/ *py README.md requirements.txt
+	rm -rf .git/ *.py README.md requirements.txt *.pyc
