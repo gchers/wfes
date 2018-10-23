@@ -1,4 +1,4 @@
-*(Repo under construction, as of 23rd October 2018)*
+**(Repo under construction, as of 23rd October 2018)**
 
 
 # Website Fingerprinting Evaluation Suite.
@@ -11,39 +11,47 @@ It provides:
 - a method to estimate security bounds and $(\varepsilon, \Phi)$-privacy of
   a WF defense.
 
-Code from other researchers (acknowledged below) was adapted to fit the API.
-With this regard, I tried making as few changes as possible, so as to keep the
-results close to the original ones; the changes I made are documented by diff
-files.
+Particularly, it gives a standard interface to use the code from other WF
+researchers, who are acknowledged below. Code from other researchers was
+adapted to fit the API. With this regard, I tried making as few changes as
+possible, so as to keep the results close to the original ones; the changes
+I made are documented by diff files.
 
-An introduction for computing security bounds is at
+An introduction to computing security bounds is at
 [https://giocher.com/pages/bayes.html](https://giocher.com/pages/bayes.html).
 
 ## Installation
 
+This was tested on Alpine Linux 3.8, although I expect it to work for most
+BSD and Linux distributions.
+Please, open an *issue* should you encounter any problems.
+
+The code works for Python 2.7.
+
 ```
-mkvirtualenv bayes
+mkvirtualenv wfes
 pip install -r requirements.txt
 ```
 
-Install weka >=3.8 in ~/$WEKA_VERSION/
-Then:
+Install weka >=3.8 in some directory `$WEKA`.
+Then install the package `LibSVM`:
 ```
-java -classpath ~/$WEKA_VERSION/weka.jar weka.core.WekaPackageManager -install-package LibSVM
-```
-Build attack code by Wang et al.
-```
-cd code/attacks/wang && make && cd -
+java -classpath $WEKA/weka.jar weka.core.WekaPackageManager -install-package LibSVM
 ```
 
-## Reproducing Experiments
+Download, patch, and build attack code.
+```
+cd code/attacks && make && cd -
+```
 
-This section should allow you to reproduce the experiments, and should help you
-replicating them with your dataset.
-I will consider here the dataset by Wang et al. 2014 ("WCN+").
+The following sections should allow you to reproduce the experiments, and
+should help you replicating them with your dataset.
 
-### Getting the WCN+ dataset (and data format explanation)
-Download the WCN+ dataset:
+## The WCN+ dataset (and data format explanation)
+
+We consider the dataset collected by Wang et al. 2014 ("WCN+").
+
+Download the dataset:
 ```bash
 mkdir -p data/WCN+
 cd data/WCN+
@@ -52,9 +60,10 @@ unzip knndata.zip
 mv batch original
 ```
 
-The dataset has the following format.
-It is a folder containing files $w-$l, with $w being the web page id,
-$l indicating the page load.
+The dataset is constituted of packet sequences corresponding to page loads.
+Each packet sequence is contained in a file with name "$W-$L", where $W is the
+webpage's id, and $L indicates the page load. For instance, "0-4" is the fourth
+page load of webpage 0.
 
 Each of these files contains, per row:
     
@@ -62,8 +71,20 @@ Each of these files contains, per row:
 
 with t_i and s_i indicating respectively time and size of the i-th packet.
 The sign of s_i indicates the packet's direction (positive means outgoing).
+Note: because this dataset represents Tor traffic, where packets' sizes are
+fixed, s_i will effectively only indicate the direction, taking value in
+{-1, +1}.
 
-### Defending the dataset
+
+## Defending the dataset
+
+You can measure security bounds for any defence.
+In this example, we apply the defence directly to the packet sequence files
+to morph them; specifically, the defence scripts that follow take as input
+a packet sequence file and output a new (morphed) packed sequence file.
+If you wish to evaluate other defences, you could simply collect live
+network data for them, and estimate security on the generated packet sequence
+files -- which should have the format specified above.
 
 Scripts to defend traces can be called as:
 ```bash
@@ -87,25 +108,46 @@ do
 done | parallel
 ```
 
-NOTE: most of these scripts assume traces' files are in the format $w-$l,
-with w=0..99, l = 0..89 as in the WCN+ dataset.
+NOTE: most of these scripts assume traces' files are in the format $W-$L,
+with W in {0..99}, L in {0..89} as in the WCN+ dataset.
 For decoy-pages, the dataset will need to contain "open world" traces
 $w, i=0..8999.
-I didn't have the time to change this in Wang's code.
+It's fairly simple to make this more general, but I didn't have the time to
+change this in Wang's code.
 
-### Extracting features
-In order to perform an attack or to compute security bounds you need to
+
+## Extracting features
+
+In order to perform an attack or to measure security bounds you need to
 first extract feature vectors ("objects") from traces.
-Each page load $w-$l corresponds to a feature vector, and each feature
-vector is contained in a file $w-$l.features.
+
+Each page load $W-$L corresponds to a feature vector, and, for the purpose
+of this document, each feature vector is contained in a file "$W-$L.features".
+We create a directory, `$FEAT_DIR`, that will contain the feature vectors.
+
+`cd` into `code/`.
 
 In general, you can extract features for attack $attack as follows:
 ```bash
-python code/extract_features.py --traces $DATASET --out $FEAT_DIR --attack $attack
+python extract_features.py --traces $DATASET --out $FEAT_DIR --attack $attack
 ```
-For a list of attacks do:
+
+For instance:
+```
+python extract_features.py --traces ../data/WCN+/ --attack knn --out ../data/features/knn/
+```
+where `../data/WCN+/` contains the (possibly defended) packet sequence files,
+and `../data/features/knn/' is the output folder that will contain the
+resulting feature files.
+
+```
+For a list of attacks run:
 ```bash
-python code/extract_features.py -h
+python extract_features.py -h
+```
+
+The `--type` option can be used to trim the features for specific attacks,
+namely k-NN and k-FP; it takes parameter either "knn" or "kfp".
 ```
 
 To extract _all_ feature sets for defended traces in data/$defence for
@@ -115,7 +157,7 @@ cd code/scripts
 bash all_features.sh
 ```
 
-#### NOTES
+### NOTES
 
 *k-NN* features. If the argument "--type knn" is added, weights are applied
 to features. This needs to be done for evaluating the attack.
@@ -131,18 +173,18 @@ In experments, I did not use this option for attacks nor bounds, as I
 observed it produced worse results.
 
 
-### Classification (attack)
+## Classification (attack)
 To evaluate an attack, launch:
 ```bash
 python code/classify.py --features $FEAT_DIR --train 0.8 --test 0.2 --attack $ATTACK --out $OUT_FNAME
 ```
 The output is a json file.
 
-### Computing bounds
+## Measuring security
 
 Computing bounds is done in two phases, which can be run concurrently.
 
-#### Computing distances
+### Computing distances
 First, you need to compute the pairwise distances between feature vectors:
 ```bash
 python code/compute_distances.py --features $FEAT_DIR --out $OUT
@@ -162,7 +204,7 @@ bounds should be computed on feature vectors rather than directly on
 packet sequences.
 
 
-#### Computing bounds
+### Computing bounds
 Then, you can compute the bounds using:
 ```bash
 python code/bounds.py --distances $DISTANCES --train 0.8 --test 0.2 --out $OUT
@@ -172,12 +214,14 @@ The output is a json file, which can be read pretty quickly with Python or
 with a text editor.
 
 
-## Hacking
+# Hacking
+
+**TODO**
 How to add new attacks/defences.
 
 How to add new distance metrics.
 
-## Credits
+# Credits
 
 * attacks/dyer: Kevin P. Dyer (https://github.com/kpdyer/website-fingerprinting)
 * attacks/hayes: Jamie Hayes (https://github.com/jhayes14/k-FP)
