@@ -1,6 +1,7 @@
-Only in dyer/: __init__.py
---- website-fingerprinting/classifiers/BandwidthClassifier.py
-+++ dyer/classifiers/BandwidthClassifier.py
+Only in dyernew/: __init__.py
+diff -aru website-fingerprinting/classifiers/BandwidthClassifier.py dyernew/classifiers/BandwidthClassifier.py
+--- website-fingerprinting/classifiers/BandwidthClassifier.py	2018-10-23 17:43:42.769698872 +0100
++++ dyernew/classifiers/BandwidthClassifier.py	2018-10-23 17:42:50.860698872 +0100
 @@ -4,7 +4,7 @@
  
  import wekaAPI
@@ -10,8 +11,9 @@ Only in dyer/: __init__.py
  
  class BandwidthClassifier:
      @staticmethod
---- website-fingerprinting/classifiers/ESORICSClassifier.py
-+++ dyer/classifiers/ESORICSClassifier.py
+diff -aru website-fingerprinting/classifiers/ESORICSClassifier.py dyernew/classifiers/ESORICSClassifier.py
+--- website-fingerprinting/classifiers/ESORICSClassifier.py	2018-10-23 17:43:42.769698872 +0100
++++ dyernew/classifiers/ESORICSClassifier.py	2018-10-23 17:42:50.860698872 +0100
 @@ -2,7 +2,7 @@
  # Copyright (C) 2012  Kevin P. Dyer (kpdyer.com)
  # See LICENSE for more details.
@@ -21,8 +23,9 @@ Only in dyer/: __init__.py
  from Packet import Packet
  import Levenshtein
  
---- website-fingerprinting/classifiers/HerrmannClassifier.py
-+++ dyer/classifiers/HerrmannClassifier.py
+diff -aru website-fingerprinting/classifiers/HerrmannClassifier.py dyernew/classifiers/HerrmannClassifier.py
+--- website-fingerprinting/classifiers/HerrmannClassifier.py	2018-10-23 17:43:42.769698872 +0100
++++ dyernew/classifiers/HerrmannClassifier.py	2018-10-23 17:42:50.860698872 +0100
 @@ -4,7 +4,7 @@
  
  import wekaAPI
@@ -32,8 +35,9 @@ Only in dyer/: __init__.py
  
  # TF-N implementation of Multinomial Naive Bayes Classifier
  class HerrmannClassifier:
---- website-fingerprinting/classifiers/JaccardClassifier.py
-+++ dyer/classifiers/JaccardClassifier.py
+diff -aru website-fingerprinting/classifiers/JaccardClassifier.py dyernew/classifiers/JaccardClassifier.py
+--- website-fingerprinting/classifiers/JaccardClassifier.py	2018-10-23 17:43:42.769698872 +0100
++++ dyernew/classifiers/JaccardClassifier.py	2018-10-23 17:42:50.860698872 +0100
 @@ -2,7 +2,7 @@
  # Copyright (C) 2012  Kevin P. Dyer (kpdyer.com)
  # See LICENSE for more details.
@@ -43,8 +47,9 @@ Only in dyer/: __init__.py
  
  class JaccardClassifier:
      @staticmethod
---- website-fingerprinting/classifiers/LiberatoreClassifier.py
-+++ dyer/classifiers/LiberatoreClassifier.py
+diff -aru website-fingerprinting/classifiers/LiberatoreClassifier.py dyernew/classifiers/LiberatoreClassifier.py
+--- website-fingerprinting/classifiers/LiberatoreClassifier.py	2018-10-23 17:43:42.769698872 +0100
++++ dyernew/classifiers/LiberatoreClassifier.py	2018-10-23 17:42:50.871698872 +0100
 @@ -2,7 +2,7 @@
  # Copyright (C) 2012  Kevin P. Dyer (kpdyer.com)
  # See LICENSE for more details.
@@ -54,8 +59,9 @@ Only in dyer/: __init__.py
  import wekaAPI
  
  class LiberatoreClassifier:
---- website-fingerprinting/classifiers/PanchenkoClassifier.py
-+++ dyer/classifiers/PanchenkoClassifier.py
+diff -aru website-fingerprinting/classifiers/PanchenkoClassifier.py dyernew/classifiers/PanchenkoClassifier.py
+--- website-fingerprinting/classifiers/PanchenkoClassifier.py	2018-10-23 17:43:42.769698872 +0100
++++ dyernew/classifiers/PanchenkoClassifier.py	2018-10-23 17:42:50.871698872 +0100
 @@ -3,12 +3,12 @@
  # See LICENSE for more details.
  
@@ -73,8 +79,9 @@ Only in dyer/: __init__.py
  import math
  
  class PanchenkoClassifier:
---- website-fingerprinting/classifiers/TimeClassifier.py
-+++ dyer/classifiers/TimeClassifier.py
+diff -aru website-fingerprinting/classifiers/TimeClassifier.py dyernew/classifiers/TimeClassifier.py
+--- website-fingerprinting/classifiers/TimeClassifier.py	2018-10-23 17:43:42.769698872 +0100
++++ dyernew/classifiers/TimeClassifier.py	2018-10-23 17:42:50.871698872 +0100
 @@ -4,7 +4,7 @@
  
  import wekaAPI
@@ -84,8 +91,9 @@ Only in dyer/: __init__.py
  
  class TimeClassifier:
      @staticmethod
---- website-fingerprinting/classifiers/VNGClassifier.py
-+++ dyer/classifiers/VNGClassifier.py
+diff -aru website-fingerprinting/classifiers/VNGClassifier.py dyernew/classifiers/VNGClassifier.py
+--- website-fingerprinting/classifiers/VNGClassifier.py	2018-10-23 17:43:42.769698872 +0100
++++ dyernew/classifiers/VNGClassifier.py	2018-10-23 17:42:50.871698872 +0100
 @@ -2,7 +2,7 @@
  # Copyright (C) 2012  Kevin P. Dyer (kpdyer.com)
  # See LICENSE for more details.
@@ -95,8 +103,9 @@ Only in dyer/: __init__.py
  import wekaAPI
  
  from statlib import stats
---- website-fingerprinting/classifiers/VNGPlusPlusClassifier.py
-+++ dyer/classifiers/VNGPlusPlusClassifier.py
+diff -aru website-fingerprinting/classifiers/VNGPlusPlusClassifier.py dyernew/classifiers/VNGPlusPlusClassifier.py
+--- website-fingerprinting/classifiers/VNGPlusPlusClassifier.py	2018-10-23 17:43:42.769698872 +0100
++++ dyernew/classifiers/VNGPlusPlusClassifier.py	2018-10-23 17:42:50.871698872 +0100
 @@ -3,12 +3,12 @@
  # See LICENSE for more details.
  
@@ -114,8 +123,9 @@ Only in dyer/: __init__.py
  import math
  
  class VNGPlusPlusClassifier:
---- website-fingerprinting/classifiers/WrightClassifier.py
-+++ dyer/classifiers/WrightClassifier.py
+diff -aru website-fingerprinting/classifiers/WrightClassifier.py dyernew/classifiers/WrightClassifier.py
+--- website-fingerprinting/classifiers/WrightClassifier.py	2018-10-23 17:43:42.769698872 +0100
++++ dyernew/classifiers/WrightClassifier.py	2018-10-23 17:42:50.871698872 +0100
 @@ -3,7 +3,7 @@
  # See LICENSE for more details.
  
@@ -125,9 +135,10 @@ Only in dyer/: __init__.py
  
  class WrightClassifier:
      @staticmethod
-Only in dyer/: classifiers/__init__.py
---- website-fingerprinting/classifiers/wekaAPI.py
-+++ dyer/classifiers/wekaAPI.py
+Only in dyernew/classifiers: __init__.py
+diff -aru website-fingerprinting/classifiers/wekaAPI.py dyernew/classifiers/wekaAPI.py
+--- website-fingerprinting/classifiers/wekaAPI.py	2018-10-23 17:43:42.769698872 +0100
++++ dyernew/classifiers/wekaAPI.py	2018-10-23 17:42:50.871698872 +0100
 @@ -4,8 +4,8 @@
  
  import re
@@ -138,9 +149,10 @@ Only in dyer/: classifiers/__init__.py
  
  def execute( trainingFile, testingFile, classifier, args ):
      myArgs = ["java",
---- website-fingerprinting/config.py
-+++ dyer/config.py
-@@ -10,17 +10,21 @@
+diff -aru website-fingerprinting/config.py dyernew/config.py
+--- website-fingerprinting/config.py	2018-10-23 17:43:42.769698872 +0100
++++ dyernew/config.py	2018-10-23 17:44:55.270698872 +0100
+@@ -10,17 +10,20 @@
  # * weka-X-Y-Z (see WEKA_ROOT to change the weka version)
  # * pcap-logs (a diretory that contains all of the LL pcap files)
  # * [optional] (a directory that contains custom/local python modules)
@@ -151,8 +163,7 @@ Only in dyer/: classifiers/__init__.py
  JVM_MEMORY_SIZE = '4192m'
  
 -WEKA_ROOT          = os.path.join(BASE_DIR   ,'weka-3-7-5')
-+#WEKA_ROOT          = os.path.join(BASE_DIR   ,'weka-3-7-5')
-+WEKA_ROOT          = os.path.join(BASE_DIR   ,'weka-3-6-14/')
++WEKA_ROOT          = os.path.join(BASE_DIR   ,'weka-3-8-3/')
  WEKA_JAR           = os.path.join(WEKA_ROOT  ,'weka.jar')
  PCAP_ROOT          = os.path.join(BASE_DIR   ,'pcap-logs')
  PYTHON_ROOT        = os.path.join(BASE_DIR   ,'python2.4')
