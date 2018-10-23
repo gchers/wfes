@@ -212,7 +212,7 @@ compute them directly on packet sequences (see experiment in
 Section 7.4 of the paper):
 
 ```bash
-python code/compute_distances --features $TRACES_DIR --sequences --out $OUT
+python compute_distances --features $TRACES_DIR --sequences --out $OUT
 ```
 
 Note that this did not produce good results (Fig.5); indeed, for most defences
@@ -224,7 +224,7 @@ one should compute security bounds after a feature transformation
 Then, you can compute the bounds using:
 
 ```bash
-python code/bounds.py --distances $DISTANCES --train 0.8 --test 0.2 --out $OUT
+python bounds.py --distances $DISTANCES --train 0.8 --test 0.2 --out $OUT
 ```
 
 The output is a json file.
