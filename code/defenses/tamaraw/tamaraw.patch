@@ -1,0 +1,62 @@
+--- tamaraw.py	2017-08-14 06:59:42.000000000 +0100
++++ ../tamarawnew/tamaraw.py	2018-10-23 20:16:25.637698872 +0100
+@@ -5,10 +5,14 @@
+ #Resultant anonymity is measured in ambiguity sizes.
+ #Resultant overhead is in size and time.
+ #Maximizing anonymity while minimizing overhead is what we want. 
++import os
++import sys
++import shutil
+ import math
+ import random
+ 
+ DATASIZE = 800
++DEFENDED = 'defended/'
+ 
+ tardist = [[], []]
+ defpackets = []
+@@ -103,15 +107,17 @@
+ ##    parameters = [100] #padL
+ ##    AnoaPad(list2, lengths, times, parameters)
+ 
+-import sys
+-import os
++if len(sys.argv) < 2:
++    print 'Usage: {} <input folder>'.format(sys.argv[0])
++    sys.exit(1)
++
+ for x in sys.argv[2:]:
+     parameters.append(float(x))
+ 
+ sitenum = 100
+ instnum = 90
+-fold = "batch/"
+-foldout = "batch-tamaraw/"
++fold = DATASET
++foldout = DEFENDED
+ 
+ if not os.path.exists(foldout):
+     os.makedirs(foldout)
+@@ -124,7 +130,7 @@
+     print site
+     for inst in range(0, instnum):
+         packets = []
+-        with open("batch/" + str(site) + "-" + str(inst), "r") as f:
++        with open(os.path.join(DATASET, str(site) + "-" + str(inst), "r")) as f:
+             lines = f.readlines()
+             starttime = float(lines[0].split("\t")[0])
+             for x in lines:
+@@ -139,10 +145,12 @@
+ 
+         list3 = []
+         
++        # NOTE (@gchers): this call used to be:
++        #   AnoaPad(list2, list3, 750, 0)
++        # but the authors have now updated it to:
+         AnoaPad(list2, list3, 100, 0)
+ 
+         fout = open(foldout + str(site) + "-" + str(inst), "w")
+         for x in list3:
+             fout.write(str(x[0]) + "\t" + str(x[1]) + "\n")
+         fout.close()
+-
