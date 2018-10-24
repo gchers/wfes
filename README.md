@@ -4,7 +4,9 @@
 # Website Fingerprinting Evaluation Suite.
 
 This is a suite for evaluating Website Fingerprinting (WF)
-attacks and defenses.
+attacks and defenses, associated with the paper
+"Bayes, not Naïve: Security Bounds on Website Fingerprinting Defenses"
+[(G. Cherubin, 2017)](https://www.degruyter.com/downloadpdf/j/popets.2017.2017.issue-4/popets-2017-0046/popets-2017-0046.pdf)
 
 It provides:
 - a standard interface to use the code from previous attacks/defences,
@@ -44,8 +46,12 @@ Download, patch, and build attack code.
 cd code/attacks && make && cd -
 ```
 
-The following sections should allow you to reproduce the experiments, and
-should help you replicating them with your dataset.
+Also, edit `WEKA_ROOT` in `code/attacks/dyer/config.py` with the directory
+containing your weka installation.
+
+
+The following sections should allow you to reproduce the experiments and
+to replicate them on your data.
 
 ## The WCN+ dataset (and data format explanation)
 
@@ -60,10 +66,10 @@ unzip knndata.zip
 mv batch original
 ```
 
-The dataset is constituted of packet sequences corresponding to page loads.
-Each packet sequence is contained in a file with name "$W-$L", where $W is the
-webpage's id, and $L indicates the page load. For instance, "0-4" is the fourth
-page load of webpage 0.
+This dataset is constituted of packet sequences corresponding to page loads.
+Each packet sequence is contained in a file with name `$W-$L`, where `$W` is
+the webpage's id, and `$L` indicates the page load. For instance, "0-4" is the
+fourth page load of webpage 0.
 
 Each of these files contains, per row:
     
@@ -78,6 +84,8 @@ fixed, s_i will effectively only indicate the direction, taking value in
 
 ## Defending the dataset
 
+**(Under construction)**
+
 You can measure security bounds for any defence.
 In this example, we apply the defence directly to the packet sequence files
 to morph them; specifically, the defence scripts that follow take as input
@@ -87,6 +95,7 @@ network data for them, and estimate security on the generated packet sequence
 files -- which should have the format specified above.
 
 Scripts to defend traces can be called as:
+
 ```bash
 python defend.py --traces $DATASET --out $DEFENDED_DATASET
 ```
@@ -108,10 +117,10 @@ do
 done | parallel
 ```
 
-NOTE: most of these scripts assume traces' files are in the format $W-$L,
-with W in {0..99}, L in {0..89} as in the WCN+ dataset.
+NOTE: most of these scripts assume traces' files are in the format `$W-$L`,
+with `$W` in {0..99}, `$L` in {0..89} as in the WCN+ dataset.
 For decoy-pages, the dataset will need to contain "open world" traces
-$w, i=0..8999.
+`$W`, i=0..8999.
 It's fairly simple to make this more general, but I didn't have the time to
 change this in Wang's code.
 
@@ -127,20 +136,22 @@ We create a directory, `$FEAT_DIR`, that will contain the feature vectors.
 
 `cd` into `code/`.
 
-In general, you can extract features for attack $attack as follows:
+In general, you can extract features for attack `$attack` as follows:
+
 ```bash
 python extract_features.py --traces $DATASET --out $FEAT_DIR --attack $attack
 ```
 
 For instance:
-```
+
+```bash
 python extract_features.py --traces ../data/WCN+/ --attack knn --out ../data/features/knn/
 ```
-where `../data/WCN+/` contains the (possibly defended) packet sequence files,
-and `../data/features/knn/' is the output folder that will contain the
-resulting feature files.
 
-```
+where `../data/WCN+/` is the directory containing the (possibly defended)
+packet sequence files, and `../data/features/knn/` is the output folder that
+will contain the resulting feature files.
+
 For a list of attacks run:
 ```bash
 python extract_features.py -h
@@ -148,14 +159,6 @@ python extract_features.py -h
 
 The `--type` option can be used to trim the features for specific attacks,
 namely k-NN and k-FP; it takes parameter either "knn" or "kfp".
-```
-
-To extract _all_ feature sets for defended traces in data/$defence for
-_all_ defences, do:
-```bash
-cd code/scripts
-bash all_features.sh
-```
 
 ### NOTES
 
@@ -175,44 +178,56 @@ observed it produced worse results.
 
 ## Classification (attack)
 To evaluate an attack, launch:
+
 ```bash
-python code/classify.py --features $FEAT_DIR --train 0.8 --test 0.2 --attack $ATTACK --out $OUT_FNAME
+python classify.py --features $FEAT_DIR --train 0.8 --test 0.2 --attack $ATTACK --out $OUT_FNAME
 ```
+
+where `--train` and `--test` specify the percentage of training and test
+examples -- whose value needs not to sum up to 1.
+
 The output is a json file.
+
+For more options, run:
+```bash
+python classify.py -h
+```
 
 ## Measuring security
 
-Computing bounds is done in two phases, which can be run concurrently.
+Computing bounds is done in two phases.
 
 ### Computing distances
 First, you need to compute the pairwise distances between feature vectors:
+
 ```bash
-python code/compute_distances.py --features $FEAT_DIR --out $OUT
+python compute_distances.py --features $FEAT_DIR --out $OUT
 ```
 
-FYI, the $OUT file can be opened using dill, should you want to
+The `$OUT` file can be opened using dill, should you want to
 inspect it.
 
 An alternative to computing distances (and bounds) on feature vectors is to
-directly compute them directly on packet sequences (see experiment in
-Section 7.4):
+compute them directly on packet sequences (see experiment in
+Section 7.4 of the paper):
+
 ```bash
 python code/compute_distances --features $TRACES_DIR --sequences --out $OUT
 ```
-Note that this did not produce good results (Fig.5) that is, it seems that
-bounds should be computed on feature vectors rather than directly on
-packet sequences.
+
+Note that this did not produce good results (Fig.5); indeed, for most defences
+one should compute security bounds after a feature transformation
+(e.g., see the [blog post](https://giocher.com/bayes.html)).
 
 
 ### Computing bounds
 Then, you can compute the bounds using:
+
 ```bash
 python code/bounds.py --distances $DISTANCES --train 0.8 --test 0.2 --out $OUT
 ```
 
-The output is a json file, which can be read pretty quickly with Python or
-with a text editor.
-
+The output is a json file.
 
 # Hacking
 
