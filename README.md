@@ -1,12 +1,9 @@
-**(Repo under construction, as of 23rd October 2018)**
-
-
-# Website Fingerprinting Evaluation Suite.
+# Website Fingerprinting Evaluation Suite
 
 This is a suite for evaluating Website Fingerprinting (WF)
 attacks and defenses, associated with the paper
 "Bayes, not Naïve: Security Bounds on Website Fingerprinting Defenses"
-[(G. Cherubin, 2017)](https://www.degruyter.com/downloadpdf/j/popets.2017.2017.issue-4/popets-2017-0046/popets-2017-0046.pdf)
+[(G. Cherubin, 2017)](https://www.degruyter.com/downloadpdf/j/popets.2017.2017.issue-4/popets-2017-0046/popets-2017-0046.pdf).
 
 It provides:
 - a standard interface to use the code from previous attacks/defences,
@@ -84,45 +81,41 @@ fixed, s_i will effectively only indicate the direction, taking value in
 
 ## Defending the dataset
 
-**(Under construction)**
-
 You can measure security bounds for any defence.
 In this example, we apply the defence directly to the packet sequence files
 to morph them; specifically, the defence scripts that follow take as input
 a packet sequence file and output a new (morphed) packed sequence file.
-If you wish to evaluate other defences, you could simply collect live
+If you wish to evaluate other defences, you can simply collect live
 network data for them, and estimate security on the generated packet sequence
 files -- which should have the format specified above.
+
+Some of the defenses' scripts are downloaded and patched using:
+
+```bash
+cd code/defenses && make && cd -
+```
 
 Scripts to defend traces can be called as:
 
 ```bash
-python defend.py --traces $DATASET --out $DEFENDED_DATASET
+python defend.py $DATASET
 ```
+
+and they will put the defended traces into `./defended`.
+This should change in the future.
 
 For example:
 ```bash
-python code/defences/WTF-PAD/wtf_pad.py --traces data/WCN+ --out data/WCN+-wtf-pad
+python defenses/CS-BuFLO/cs_buflo.py data/WCN+/original
 ```
 
-To defend all:
-```bash
-DATASET=data/WCN+/original
-DST=data/WCN+/
-
-for f in code/defences/*
-do
-    defence=$(basename $f)
-    echo $f/defend.py --traces $DATASET --out $DST/$defence
-done | parallel
-```
 
 NOTE: most of these scripts assume traces' files are in the format `$W-$L`,
 with `$W` in {0..99}, `$L` in {0..89} as in the WCN+ dataset.
 For decoy-pages, the dataset will need to contain "open world" traces
 `$W`, i=0..8999.
 It's fairly simple to make this more general, but I didn't have the time to
-change this in Wang's code.
+change this in Tao Wang's code.
 
 
 ## Extracting features
@@ -145,7 +138,7 @@ python extract_features.py --traces $DATASET --out $FEAT_DIR --attack $attack
 For instance:
 
 ```bash
-python extract_features.py --traces ../data/WCN+/ --attack knn --out ../data/features/knn/
+python extract_features.py --traces ../data/WCN+/original --attack knn --out ../data/features/knn/
 ```
 
 where `../data/WCN+/` is the directory containing the (possibly defended)
@@ -240,6 +233,7 @@ How to add new distance metrics.
 
 * attacks/dyer: Kevin P. Dyer (https://github.com/kpdyer/website-fingerprinting)
 * attacks/hayes: Jamie Hayes (https://github.com/jhayes14/k-FP)
-* attacks/pulls: Tobias Pulls (https://github.com/pylls/go-knn)
+* Tobias Pulls: for WTF-PAD's distributions, and for kindly trying all this out
+  on an Ubuntu 18.10 LTS machine
 * defences/{BuFLO, HTTPOS, tamaraw, traffic_morphing}: Tao Wang (https://cs.uwaterloo.ca/~t55wang/wf.html)
 * CUMUL attack's code was inspired by the original by Andriy Panchenko (http://lorre.uni.lu/~andriy/zwiebelfreunde/)
