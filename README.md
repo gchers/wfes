@@ -63,7 +63,7 @@ unzip knndata.zip
 mv batch original
 ```
 
-This dataset is constituted of packet sequences corresponding to page loads.
+This dataset is constituted of packet sequences corresponding to different page loads.
 Each packet sequence is contained in a file with name `$W-$L`, where `$W` is
 the webpage's id, and `$L` indicates the page load. For instance, "0-4" is the
 fourth page load of webpage 0.
